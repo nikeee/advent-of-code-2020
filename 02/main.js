@@ -7,12 +7,12 @@ const input = require("fs").readFileSync("input.txt", { encoding: "utf-8" });
 
 function parseLine(line) {
 	const [policy, candidate] = line.split(":").map(s => s.trim());
-	const [occurences, char] = policy.split(" ");
-	const [minOccurences, maxOccurences] = occurences.split("-").map(s => parseInt(s));
+	const [occurrences, char] = policy.split(" ");
+	const [minOccurrences, maxOccurrences] = occurrences.split("-").map(s => parseInt(s));
 	return {
 		policy: {
-			minOccurences,
-			maxOccurences,
+			minOccurrences,
+			maxOccurrences,
 			char,
 		},
 		candidate,
@@ -20,9 +20,9 @@ function parseLine(line) {
 }
 
 function validatePasswordPart1({ policy, candidate }) {
-	let occurences = [...candidate].filter(c => c === policy.char).length;
+	let occurrences = [...candidate].filter(c => c === policy.char).length;
 
-	return policy.minOccurences <= occurences && occurences <= policy.maxOccurences;
+	return policy.minOccurrences <= occurrences && occurrences <= policy.maxOccurrences;
 }
 
 const part1 = input.trim()
@@ -34,7 +34,7 @@ const part1 = input.trim()
 console.log(`Number of valid passwords; Part 1: ${part1}`);
 
 function validatePasswordPart2({ policy, candidate }) {
-	const { minOccurences: firstIndex, maxOccurences: secondIndex } = policy;
+	const { minOccurrences: firstIndex, maxOccurrences: secondIndex } = policy;
 
 	return (candidate[firstIndex - 1] === policy.char) ^ (candidate[secondIndex - 1] === policy.char);
 }
