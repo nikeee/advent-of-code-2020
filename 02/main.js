@@ -19,7 +19,7 @@ function parseLine(line) {
 	};
 }
 
-function validatePassword({ policy, candidate }) {
+function validatePasswordPart1({ policy, candidate }) {
 	let occurences = [...candidate].filter(c => c === policy.char).length;
 
 	return policy.minOccurences <= occurences && occurences <= policy.maxOccurences;
@@ -28,7 +28,21 @@ function validatePassword({ policy, candidate }) {
 const part1 = input.trim()
 	.split("\n")
 	.map(parseLine)
-	.filter(validatePassword)
+	.filter(validatePasswordPart1)
 	.length;
 
-console.log(`Number of valid passwords: ${part1}`);
+console.log(`Number of valid passwords; Part 1: ${part1}`);
+
+function validatePasswordPart2({ policy, candidate }) {
+	const { minOccurences: firstIndex, maxOccurences: secondIndex } = policy;
+
+	return (candidate[firstIndex - 1] === policy.char) ^ (candidate[secondIndex - 1] === policy.char);
+}
+
+const part2 = input.trim()
+	.split("\n")
+	.map(parseLine)
+	.filter(validatePasswordPart2)
+	.length;
+
+console.log(`Number of valid passwords; Part 2: ${part2}`);
