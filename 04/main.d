@@ -7,7 +7,6 @@ import std.stdio, std.string, std.conv, std.array, std.algorithm, std.typecons, 
 
 enum PassportField
 {
-	None = 0,
 	byr = 1 << 0,
 	iyr = 1 << 1,
 	eyr = 1 << 2,
@@ -70,10 +69,9 @@ void main()
 }
 
 bool isValidPassportPart1(string[PassportField] passport) {
-	if (PassportField.cid in passport) {
-		return passport.length == 8;
-	}
-	return passport.length == 7;
+	return PassportField.cid in passport
+			? passport.length == 8
+			: passport.length == 7;
 }
 
 bool isValidPassportPart2(string[PassportField] passport) {
@@ -88,7 +86,6 @@ bool isValidPassportPart2(string[PassportField] passport) {
 
 bool validateField(PassportField field, string value) {
 	final switch (field) {
-		case PassportField.None: return true;
 		case PassportField.byr: return 1920 <= to!int(value) && to!int(value) <= 2002;
 		case PassportField.iyr: return 2010 <= to!int(value) && to!int(value) <= 2020;
 		case PassportField.eyr: return 2020 <= to!int(value) && to!int(value) <= 2030;
