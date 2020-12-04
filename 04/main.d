@@ -34,7 +34,7 @@ void main()
 	int totalPassportCount = 0;
 	int validPassports = 0;
 
-	PassportField currentFields = PassportField.None;
+	string[PassportField] currentPassport;
 
 	foreach(line; stdin.byLine) {
 
@@ -44,29 +44,35 @@ void main()
 			// The passport was finished
 
 			++totalPassportCount;
-
-			if ((currentFields & ~PassportField.cid) >= validPassport) {
+			if (isValidPassportPart1(currentPassport)) {
 				++validPassports;
 			}
 
-			currentFields = PassportField.None;
+			currentPassport.clear();
 		}
 
 		auto kvPairs = strippedLine.split;
 		auto parsedFields = kvPairs.map!(readKeyValue);
 
 		foreach(field; parsedFields) {
-			currentFields |= to!PassportField(field.key);
+			currentPassport[to!PassportField(field.key)] = field.value;
 		}
 	}
 
 	++totalPassportCount;
-	if ((currentFields & ~PassportField.cid) >= validPassport) {
+	if (isValidPassportPart1(currentPassport)) {
 		++validPassports;
 	}
 
 	writefln("Found %d passports", totalPassportCount);
 	writefln("%d were valid", validPassports);
+}
+
+bool isValidPassportPart1(string[PassportField] passport) {
+	if (PassportField.cid in passport) {
+		return passport.length == 8;
+	}
+	return passport.length == 7;
 }
 
 KeyValueEntry readKeyValue(string keyValueString) {
