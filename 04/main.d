@@ -3,7 +3,7 @@
 // Using docker:
 //     docker run --rm -ti -v $(pwd):/src dlanguage/dmd dmd -run main.d < input.txt
 
-import std.stdio, std.string, std.conv, std.array, std.algorithm, std.typecons;
+import std.stdio, std.string, std.conv, std.array, std.algorithm, std.typecons, std.regex, std.algorithm.searching, std.ascii;
 
 enum PassportField
 {
@@ -18,21 +18,16 @@ enum PassportField
 	cid = 1 << 7,
 };
 
-// It's okay to miss cid
-const PassportField validPassport = PassportField.byr
-									| PassportField.iyr
-									| PassportField.eyr
-									| PassportField.hgt
-									| PassportField.hcl
-									| PassportField.pid
-									| PassportField.ecl;
-
 alias KeyValueEntry = Tuple!(string, "key", string, "value");
+
+static color = regex(r"^#[0-9a-f]{6}$");
+static passportId = regex(r"^\d{9}$");
 
 void main()
 {
 	int totalPassportCount = 0;
-	int validPassports = 0;
+	int validPassportsPart1 = 0;
+	int validPassportsPart2 = 0;
 
 	string[PassportField] currentPassport;
 
@@ -40,12 +35,15 @@ void main()
 
 		auto strippedLine = strip(line.to!string);
 
-		if ( strippedLine == "") {
+		if (strippedLine == "") {
 			// The passport was finished
 
 			++totalPassportCount;
 			if (isValidPassportPart1(currentPassport)) {
-				++validPassports;
+				++validPassportsPart1;
+
+				if (isValidPassportPart2(currentPassport))
+					++validPassportsPart2;
 			}
 
 			currentPassport.clear();
@@ -61,11 +59,14 @@ void main()
 
 	++totalPassportCount;
 	if (isValidPassportPart1(currentPassport)) {
-		++validPassports;
+		++validPassportsPart1;
+		if(isValidPassportPart2(currentPassport))
+			++validPassportsPart2;
 	}
 
-	writefln("Found %d passports", totalPassportCount);
-	writefln("%d were valid", validPassports);
+	writefln("Total passports checked: %d", totalPassportCount);
+	writefln("Valid passports accoring to part 1: %d", validPassportsPart1);
+	writefln("Valid passports accoring to part 2: %d", validPassportsPart2);
 }
 
 bool isValidPassportPart1(string[PassportField] passport) {
@@ -73,6 +74,39 @@ bool isValidPassportPart1(string[PassportField] passport) {
 		return passport.length == 8;
 	}
 	return passport.length == 7;
+}
+
+bool isValidPassportPart2(string[PassportField] passport) {
+	foreach(field, value; passport) {
+		if (!validateField(field, value)) {
+			// writeln("Invalid field value; ", field, " ", value);
+			return false;
+		}
+	}
+	return true;
+}
+
+bool validateField(PassportField field, string value) {
+	final switch (field) {
+		case PassportField.None: return true;
+		case PassportField.byr: return 1920 <= to!int(value) && to!int(value) <= 2002;
+		case PassportField.iyr: return 2010 <= to!int(value) && to!int(value) <= 2020;
+		case PassportField.eyr: return 2020 <= to!int(value) && to!int(value) <= 2030;
+		case PassportField.hgt: {
+			if (value.endsWith("cm")) {
+				auto cm = to!int(strip(value, "cm"));
+				return 150 <= cm && cm <= 193;
+			} else if (value.endsWith("in")) {
+				auto inch = to!int(strip(value, "in"));
+				return 59 <= inch && inch <= 76;
+			}
+			return false;
+		}
+		case PassportField.hcl: return !!matchFirst(value, color);
+		case PassportField.ecl: return ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].canFind(value);
+		case PassportField.pid: return !!matchFirst(value, passportId);
+		case PassportField.cid: return true;
+	}
 }
 
 KeyValueEntry readKeyValue(string keyValueString) {
