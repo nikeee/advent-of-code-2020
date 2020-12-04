@@ -8,7 +8,8 @@ use std::vec::Vec;
 
 fn main() {
 	let (map, map_width) = read_input();
-	part_1(map, map_width)
+	part_1(&map, map_width);
+	part_2(&map, map_width);
 }
 
 fn read_input() -> (Vec<Vec<bool>>, usize) {
@@ -38,12 +39,23 @@ fn read_input() -> (Vec<Vec<bool>>, usize) {
 	(rows, first_row_width.unwrap())
 }
 
-fn part_1(map: Vec<Vec<bool>>, map_width: usize) {
-	let tree_count = traverse_map(map, map_width, 3, 1);
+fn part_1(map: &Vec<Vec<bool>>, map_width: usize) {
+	let tree_count = traverse_map(&map, map_width, 3, 1);
 	println!("Number of trees when traversing (3, 1); Part 1: {}", tree_count)
 }
 
-fn traverse_map(map: Vec<Vec<bool>>, map_width: usize, dir_x: usize, dir_y: usize) -> i32 {
+fn part_2(map: &Vec<Vec<bool>>, map_width: usize) {
+	let mut tree_count = 1;
+	tree_count *= traverse_map(&map, map_width, 1, 1);
+	tree_count *= traverse_map(&map, map_width, 3, 1);
+	tree_count *= traverse_map(&map, map_width, 5, 1);
+	tree_count *= traverse_map(&map, map_width, 7, 1);
+	tree_count *= traverse_map(&map, map_width, 1, 2);
+
+	println!("Number of trees when traversing; Part 2: {}", tree_count)
+}
+
+fn traverse_map(map: &Vec<Vec<bool>>, map_width: usize, dir_x: usize, dir_y: usize) -> u32 {
 
 	let (mut pos_x, mut pos_y) = (0, 0);
 	let target_y = map.len();
