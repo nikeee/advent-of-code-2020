@@ -8,7 +8,8 @@
 
 #include <iostream>
 #include <vector>
-#include <bitset>
+#include <set>
+#include <algorithm>
 
 using namespace std;
 
@@ -25,50 +26,57 @@ vector<string> read_input()
 	return res;
 }
 
-uint parse_seat_string(const string &value)
+uint parse_seat_id(const string &value)
 {
-	uint binary_seat = 0;
+	uint set_id = 0;
 	for (size_t i = 0; i < seat_length; ++i)
 	{
 		auto c = value.at(i);
 		int bit = c == 'F' || c == 'L' ? 0 : 1;
 
-		binary_seat |= bit << (seat_length - i - 1);
+		set_id |= bit << (seat_length - i - 1);
 	}
-	return binary_seat;
+	return set_id;
 }
 
-int main()
+/**
+ * The binary space partition actually is pretty straigt-forward if we interpret F/B as 0/1 and L/R as 0/1.
+ * This means BFFFBBFRRR becomes 1000110111, with 0b1000110 being the row and 0b111 being the column
+ * So the seat ID is just 0b1000110 * 8 + 0b111 = 567
+ * This can be simplified more:
+ * Multiplying by 8 is the same as "<< 3". This means that we can just parse the 10 bit and leave it as is.
+ * BFFFBBFRRR becomes 0b1000110111, which is 567.
+ */
+set<uint> get_seat_ids(const vector<string> seat_names)
 {
-	auto input = read_input();
+	set<uint> seat_ids;
 
-	// The binary space partition actually is pretty straigt-forward if we interpret F/B as 0/1 and L/R as 0/1.
-	// This means BFFFBBFRRR becomes 1000110111, with 0b1000110 being the row and 0b111 being the column
-	// So the seat ID is just 0b1000110 * 8 + 0b111 = 567
-
-	uint max_seat_id = 0;
-	for (auto &seat : input)
+	for (auto &seat : seat_names)
 	{
 		if (seat.length() != seat_length)
 		{
 			cout << "Skipping seat " << seat << endl;
 			continue;
 		}
-
-		auto binary_seat = parse_seat_string(seat);
-
-		uint row_id = binary_seat >> 3;
-		uint column_id = binary_seat & 0b111;
-
-		auto seat_id = row_id * 8 + column_id;
-
-		if (seat_id > max_seat_id)
-			max_seat_id = seat_id;
-
-		cout << seat << ": " << seat_id << endl;
+		seat_ids.insert(parse_seat_id(seat));
 	}
 
+	return seat_ids;
+}
+
+int main()
+{
+	auto input = read_input();
+
+	auto seat_ids = get_seat_ids(input);
+
+	auto max_seat_id = *max_element(seat_ids.begin(), seat_ids.end());
 	cout << "Highest seat id; part 1: " << max_seat_id << endl;
+
+	// Part 2, notes:
+	// some of the seats at the very front and back of the plane don't exist on this aircraft, so they'll be missing from your list as well.
+	// Your seat wasn't at the very front or back, though
+	// -> the (binary) seats starting with 0b0000000 or 0b1111111 can be skipped
 
 	return 0;
 }
