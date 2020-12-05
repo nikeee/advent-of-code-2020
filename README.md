@@ -10,5 +10,6 @@ To see how to run the solutions of each individual day, look at its main source 
 | 2   | [Password Philosophy](https://adventofcode.com/2020/day/2) | [Link](02) | [JavaScript](https://en.wikipedia.org/wiki/JavaScript)            |
 | 3   | [Toboggan Trajectory](https://adventofcode.com/2020/day/3) | [Link](03) | [Rust](https://en.wikipedia.org/wiki/Rust_(programming_language)) |
 | 4   | [Passport Processing](https://adventofcode.com/2020/day/4) | [Link](04) | [D](https://en.wikipedia.org/wiki/D_(programming_language))       |
+| 5   | [Binary Boarding](https://adventofcode.com/2020/day/5)     | [Link](05) | [C++](https://en.wikipedia.org/wiki/C++)                          |
 
 [Solutions and language ideas of 2019](https://github.com/nikeee/advent-of-code-2019)
