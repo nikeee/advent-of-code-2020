@@ -1,5 +1,5 @@
 // Compile:
-//     g++ -std=c++17 -O3 -Wall -Wextra main.cpp
+//     g++ -std=c++20 -O3 -Wall -Wextra -Wpedantic -Werror main.cpp
 // Run:
 //     ./a.out < input.txt
 // Compiler version:
@@ -70,13 +70,37 @@ int main()
 
 	auto seat_ids = get_seat_ids(input);
 
+	// Part 1
 	auto max_seat_id = *max_element(seat_ids.begin(), seat_ids.end());
 	cout << "Highest seat id; part 1: " << max_seat_id << endl;
 
-	// Part 2, notes:
+	// Part 2
+
+	// Notes:
 	// some of the seats at the very front and back of the plane don't exist on this aircraft, so they'll be missing from your list as well.
 	// Your seat wasn't at the very front or back, though
 	// -> the (binary) seats starting with 0b0000000 or 0b1111111 can be skipped
+
+	for (auto &seat_id : seat_ids)
+	{
+		// seat_ids doesn't contain my_seat, but it contains my_seat - 1 and my_seat + 1
+		// -> We can check for each seat_id in seat_ids if seat_ids doesn't contain seat_id + 1 but contains seat_id + 2
+		// -> If this happens, then my_seat is seat_id + 1
+
+		auto my_seat_candidate = seat_id + 1;
+
+		auto row_id = my_seat_candidate >> 3;
+		// This doesn't actually happen in the input, but we check it anyways, since it's mentioned in the text
+		if (row_id == 0b0000000 || row_id == 0b1111111)
+			continue;
+
+		// set.contains needs C++20
+		if (!seat_ids.contains(my_seat_candidate) && seat_ids.contains(my_seat_candidate + 1))
+		{
+			cout << "My seat id; part 2: " << my_seat_candidate << endl;
+			break;
+		}
+	}
 
 	return 0;
 }
