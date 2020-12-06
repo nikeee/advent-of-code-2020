@@ -5,6 +5,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Day6</RootNamespace>
     <LanguageVersion>latest</LanguageVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

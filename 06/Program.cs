@@ -1,29 +1,43 @@
 ﻿// Use:
 //     dotnet run < input.txt
 
-#nullable enable
-
 using System;
 using System.Linq;
 using System.Collections.Generic;
 
-var forms = new List<HashSet<char>>();
+const string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-var currentGroup = new HashSet<char>();
+var anyoneAnsweredForms = new List<HashSet<char>>();
+var anyoneAnswered = new HashSet<char>();
+
+var allAnsweredForms = new List<HashSet<char>>();
+var allAnswered = new HashSet<char>(alphabet.ToCharArray());
 
 string? line = null;
-while ((line = Console.ReadLine()) != null)
+while ((line = Console.ReadLine()?.Trim()) != null)
 {
-    if (line == string.Empty) {
-        forms.Add(currentGroup);
-        currentGroup = new HashSet<char>();
+    if (line == string.Empty)
+    {
+        // Group is finished
+
+        anyoneAnsweredForms.Add(anyoneAnswered);
+        anyoneAnswered = new HashSet<char>();
+
+        allAnsweredForms.Add(allAnswered);
+        allAnswered = new HashSet<char>(alphabet.ToCharArray());
     }
-
-    foreach(var c in line.ToCharArray())
-        currentGroup.Add(c);
+    else
+    {
+        anyoneAnswered.UnionWith(line.ToCharArray());
+        allAnswered.IntersectWith(line.ToCharArray());
+    }
 }
-forms.Add(currentGroup);
 
-var part1 = forms.Select(group => group.Count).Sum();
+anyoneAnsweredForms.Add(anyoneAnswered);
+allAnsweredForms.Add(allAnswered);
 
-Console.WriteLine($"Total different answers of all groups; Part1: {part1}");
+var part1 = anyoneAnsweredForms.Select(group => group.Count).Sum();
+Console.WriteLine($"Total different answers of all groups (any answer counts); Part1: {part1}");
+
+var part2 = allAnsweredForms.Select(group => group.Count).Sum();
+Console.WriteLine($"Total different answers of all groups (all must answer the same); Part2: {part2}");
