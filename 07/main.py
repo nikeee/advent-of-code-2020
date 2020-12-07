@@ -77,6 +77,7 @@ def create_adjacent_matrix(rules, bag_indexes) -> np.ndarray:
 
     return res
 
+
 def create_input_state(starting_color, bag_indexes) -> np.ndarray:
     vector_dimension = len(rules)
 
@@ -89,24 +90,42 @@ def create_input_state(starting_color, bag_indexes) -> np.ndarray:
 rules, bag_indexes = read_input()
 index_to_bag = dict(map(reversed, bag_indexes.items()))
 
-np.set_printoptions(threshold=sys.maxsize, linewidth=4000)
-
 starting_color = 'shiny gold'
-
 adjacent_matrix = create_adjacent_matrix(rules, bag_indexes)
-state = create_input_state(starting_color, bag_indexes)
+# print('Adjacent:')
+# print(adjacent_matrix)
 
-bags_colored = np.zeros(len(bag_indexes), dtype=int)
+
+# Part 1
+state = create_input_state(starting_color, bag_indexes)
+colored_bags = np.zeros(len(bag_indexes), dtype=int)
 
 while True:
     state = np.matmul(adjacent_matrix, state)
-    bags_colored += state
 
+    colored_bags += state
     if np.count_nonzero(state) == 0:
         break
 
-print('Colored:')
-print(bags_colored)
+# print('Colored:')
+# print(colored_bags)
 
-part1 = np.count_nonzero(bags_colored)
-print(f'Number of different colored bags that are possible in {starting_color}: {part1}')
+part1 = np.count_nonzero(colored_bags)
+print(f'Number of different colored bags that are possible in {starting_color}; Part 1: {part1}')
+
+# Part 2
+# It's basically the same, we just multiply the adjacent from the other side.
+
+state = create_input_state(starting_color, bag_indexes)
+bags_needed = np.zeros(len(bag_indexes), dtype=int)
+
+while True:
+    state = np.matmul(state, adjacent_matrix)
+
+    bags_needed += state
+    if np.count_nonzero(state) == 0:
+        break
+
+part2 = sum(bags_needed)
+
+print(f'Number of bags needed when starting with one {starting_color} bag; Part 2: {part2}')
