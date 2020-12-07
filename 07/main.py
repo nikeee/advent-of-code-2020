@@ -16,12 +16,13 @@ import numpy as np
 # This question asks for the total number of paths that end up (or begin with, depending on the implementation) in the shiny gold bag.
 #
 # Note:
-# - There may be cycles in the graph, so there may be infinite paths. However, As we're only interested in bag colors, we don't need to count exact paths, only the nodes.
-# - The number of bags of each color that a bag contains may be interpreted as the wheights on the edges of the graph
+# - We assume that that there are no cycles in the dependency graph. If there were cycles, we'd need infinite bags.
+#     - -> There must be a state where we don't need any more bags
+# - The number of bags of each color that a bag contains may be interpreted as the weights on the edges of the graph.
 #
 # Possible approaches:
 # - Create a graph structure and perform backtracking on all possible paths
-# - Create an adjacent matrix and iterate until nothing changes (this is what we do here)
+# - Create an adjacent matrix and iterate until we don't need any more bags (this is what we do here)
 #
 # We try to take the second approach:
 # 1. We represent th edirected graph as an adjacent matrix.
@@ -30,7 +31,7 @@ import numpy as np
 # 4. Multiply the state with the adjacent matrix.
 # 5. The result is an output configuration (state)
 # 6. counting_vector += state
-# 7. Repeat 2-6 until the state yields 0 for all colors
+# 7. Repeat 2-6 until the state yields 0 for all bag colors
 # 8. Count the non-zero entries in counting_vector
 
 
@@ -79,9 +80,7 @@ def create_adjacent_matrix(rules, bag_indexes) -> np.ndarray:
 
 
 def create_input_state(starting_color, bag_indexes) -> np.ndarray:
-    vector_dimension = len(rules)
-
-    res = np.zeros(vector_dimension, dtype=int)
+    res = np.zeros(len(rules), dtype=int)
     start_index = bag_indexes[starting_color]
     res[start_index] = 1
     return res
@@ -98,23 +97,23 @@ adjacent_matrix = create_adjacent_matrix(rules, bag_indexes)
 
 # Part 1
 state = create_input_state(starting_color, bag_indexes)
-colored_bags = np.zeros(len(bag_indexes), dtype=int)
+counting_vector = np.zeros(len(bag_indexes), dtype=int)
 
 while True:
     state = np.matmul(adjacent_matrix, state)
 
-    colored_bags += state
+    counting_vector += state
     if np.count_nonzero(state) == 0:
         break
 
 # print('Colored:')
-# print(colored_bags)
+# print(counting_vector)
 
-part1 = np.count_nonzero(colored_bags)
+part1 = np.count_nonzero(counting_vector)
 print(f'Number of different colored bags that are possible in {starting_color}; Part 1: {part1}')
 
 # Part 2
-# It's basically the same, we just multiply the adjacent from the other side.
+# It's basically the same, we just multiply the adjacent matrix from the other side (or the state, depending on your perspective).
 
 state = create_input_state(starting_color, bag_indexes)
 bags_needed = np.zeros(len(bag_indexes), dtype=int)
