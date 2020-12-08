@@ -31,7 +31,6 @@ type Instruction struct {
 func readInput() []Instruction {
 	var instructions []Instruction
 
-
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -49,10 +48,56 @@ func readInput() []Instruction {
 func main() {
 	instructions := readInput()
 
-	executeProgram(instructions)
+	// Part 1
+	terminated, accumulator := executeProgram(instructions)
+	if (!terminated) {
+		fmt.Println("Value of accumulator before executing an instruction twice; Part 1:", accumulator);
+	}
+
+	// Part 2
+	var lastModification int = -1
+	for {
+		instructionsCandidate, modifiedAt := modifyProgram(instructions, lastModification)
+		if (modifiedAt == len(instructionsCandidate)) {
+			fmt.Println("Search space exhausted, no more modifications possible.")
+			break
+		}
+
+		lastModification = modifiedAt
+
+		terminated, accumulator := executeProgram(instructionsCandidate)
+		if (terminated) {
+			fmt.Println("Value of accumulator after pro program temrinates; Part 2:", accumulator);
+			break
+		}
+	}
 }
 
-func executeProgram(instructions []Instruction) {
+func modifyProgram(instructions []Instruction, lastChangedInstruction int) ([]Instruction, int) {
+	modifiedInstructions := make([]Instruction, len(instructions))
+	copy(modifiedInstructions, instructions)
+
+	for i := lastChangedInstruction + 1; i < len(modifiedInstructions); i++ {
+		ins := modifiedInstructions[i]
+
+		switch ins.Operation {
+		case jmp:
+			modifiedInstructions[i].Operation = nop
+			return modifiedInstructions, i
+		case nop:
+			// If the parameter is 0, chainging it to a jump would cause an infinite loop
+			if (ins.Parameter != 0) {
+				modifiedInstructions[i].Operation = jmp
+				return modifiedInstructions, i
+			}
+		case acc: // Don't do anything to acc instructions
+		}
+	}
+
+	return modifiedInstructions, len(modifiedInstructions)
+}
+
+func executeProgram(instructions []Instruction) (bool, int) {
 	var ip int = 0
 	var globalAccumulator int = 0
 
@@ -74,16 +119,16 @@ func executeProgram(instructions []Instruction) {
 
 		_, exists := visitedLocations[nextIp];
 		if (exists) {
-			fmt.Println("Value for accumulator before executing an instruction twice; Part 1:", globalAccumulator);
-			break
+			return false, globalAccumulator
 		}
 
 		if (nextIp >= len(instructions)) {
-			fmt.Println("Program terminated")
-			break
+			return true, globalAccumulator
 		}
 
 		ip = nextIp
 		visitedLocations[nextIp] = true
 	}
+
+	return true, globalAccumulator
 }
