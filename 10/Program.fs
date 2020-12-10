@@ -8,19 +8,18 @@ let rec readlines () = seq {
         yield! readlines ()
 }
 
-let adapterFits source target =
-    source < target && source >= target - 3
-
-let fittingAdapters allAdapters source =
-    allAdapters
-        |> Set.filter (adapterFits source)
-
 type DeltaStats = {
     OneDeltas: int
     ThreeDeltas: int
 }
 
 type Path = int list
+
+let adapterFits source target =
+    source < target && source >= target - 3
+
+let fittingAdapters allAdapters source =
+    allAdapters |> Set.filter (adapterFits source)
 
 [<EntryPoint>]
 let main argv =
@@ -67,10 +66,9 @@ let main argv =
     The task is to find the number ofhamiltonian paths that starts at node 0 and ends at node max(joltage) + 3.
 
     Notes:
-    - Every path constructed is unique
     - The graph is acyclic
     - We have a defined start and end
-    - We only care about the number of paths, not the paths itself
+    - We only care about the number of paths, not the paths themselves
     *)
 
     let getPrevNodes target =
