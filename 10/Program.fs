@@ -73,8 +73,6 @@ let main argv =
     - We only care about the number of paths, not the paths itself
     *)
 
-    let totalGraphData = Set.add 0 allAdapters
-
     let getPrevNodes target =
         allAdapters |> Seq.filter (fun c -> adapterFits c target)
 
@@ -84,11 +82,11 @@ let main argv =
         | _ -> getPrevNodes currentNode |> Seq.sumBy (fun n -> paths.[n])
 
     let visitedNodes = new Dictionary<int, int64>()
-    for node in (totalGraphData |> Seq.sort) do
+    for node in (allAdapters |> Seq.sort) do
         let nodeValue = countHamiltonPaths (node, visitedNodes)
         visitedNodes.[node] <- nodeValue
 
-    let part2 = countHamiltonPaths (totalGraphData.MaximumElement, visitedNodes)
+    let part2 = countHamiltonPaths (allAdapters.MaximumElement, visitedNodes)
     printfn "Possible number of was combining the input; Part 2: %d" part2
 
     0
