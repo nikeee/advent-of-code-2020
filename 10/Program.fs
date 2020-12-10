@@ -23,10 +23,8 @@ let fittingAdapters allAdapters source =
 
 [<EntryPoint>]
 let main argv =
-    let lines = readlines()
-
     let input =
-        lines
+        readlines()
         |> Seq.map Int32.Parse
         |> Set.ofSeq
 
