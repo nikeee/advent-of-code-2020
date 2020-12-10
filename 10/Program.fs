@@ -72,7 +72,7 @@ let main argv =
     let getPrevNodes target =
         allAdapters |> Seq.filter (fun c -> adapterFits c target)
 
-    let rec countHamiltonPaths (currentNode: int, paths: Dictionary<int, int64>): int64 =
+    let countHamiltonPaths (currentNode: int, paths: Dictionary<int, int64>): int64 =
         match currentNode with
         | 0 -> 1L
         | _ -> getPrevNodes currentNode |> Seq.sumBy (fun n -> paths.[n])
