@@ -13,29 +13,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
-  enum Occupation {
-    FLOOR('.'),
-    EMPTY('L'),
-    OCCUPIED('#'),
-    ;
-    private final char representation;
+  private static final char FLOOR = '.';
+  private static final char EMPTY = 'L';
+  private static final char OCCUPIED = '#';
 
-    Occupation(char representation) {
-      this.representation = representation;
-    }
-
-    static Occupation parse(char value) {
-      return Arrays.stream(Occupation.values())
-          .filter(e -> e.representation == value)
-          .findFirst()
-          .orElseThrow();
-    }
-  }
-
-  static List<Occupation> parseLine(String line) {
+  static List<Character> parseLine(String line) {
     return line.chars()
         .mapToObj(i -> (char) i)
-        .map(Occupation::parse)
         .collect(Collectors.toUnmodifiableList());
   }
 
@@ -52,7 +36,7 @@ public class Main {
     System.out.println("Number of occupied seats in part 2: " + part2);
   }
 
-  static long countOccupiedSeatsIterated(List<List<Occupation>> initialMap, OccupationProcessor processor) {
+  static long countOccupiedSeatsIterated(List<List<Character>> initialMap, OccupationProcessor processor) {
     var map = initialMap;
     var prevMap = toStringMap(map);
     String mapStr = "";
@@ -66,21 +50,21 @@ public class Main {
 
     return map.stream()
         .flatMap(Collection::stream)
-        .filter(Occupation.OCCUPIED::equals)
+        .filter(c -> c == OCCUPIED)
         .count();
   }
 
   interface OccupationProcessor {
-    Occupation getOccupation(int x, int y, List<List<Occupation>> map, int width, int height);
+    char getOccupation(int x, int y, List<List<Character>> map, int width, int height);
   }
 
-  static List<List<Occupation>> iterate(List<List<Occupation>> inputMap, OccupationProcessor processor) {
+  static List<List<Character>> iterate(List<List<Character>> inputMap, OccupationProcessor processor) {
     var mapWidth = inputMap.get(0).size();
     var mapHeight = inputMap.size();
 
-    List<List<Occupation>> res = new ArrayList<>(mapHeight);
+    List<List<Character>> res = new ArrayList<>(mapHeight);
     for (int y = 0; y < mapHeight; ++y) {
-      var row = new ArrayList<Occupation>(mapWidth);
+      var row = new ArrayList<Character>(mapWidth);
       res.add(row);
       for (int x = 0; x < mapWidth; ++x) {
         var newValue = processor.getOccupation(x, y, inputMap, mapWidth, mapHeight);
@@ -90,10 +74,10 @@ public class Main {
     return res;
   }
 
-  static Occupation getOccupationPart1(int x, int y, List<List<Occupation>> map, int width, int height) {
+  static char getOccupationPart1(int x, int y, List<List<Character>> map, int width, int height) {
     var current = map.get(y).get(x);
-    if (current == Occupation.FLOOR)
-      return Occupation.FLOOR;
+    if (current == FLOOR)
+      return FLOOR;
 
     int occupied = 0;
     for (int currentY = Math.max(y - 1, 0); currentY < Math.min(y + 2, height); ++currentY) {
@@ -104,23 +88,23 @@ public class Main {
           continue;
 
         var field = row.get(currentX);
-        if (field == Occupation.OCCUPIED) {
+        if (field == OCCUPIED) {
             ++occupied;
         }
       }
     }
 
-    if (current == Occupation.EMPTY && occupied == 0)
-      return Occupation.OCCUPIED;
-    if (current == Occupation.OCCUPIED && occupied >= 4)
-      return Occupation.EMPTY;
+    if (current == EMPTY && occupied == 0)
+      return OCCUPIED;
+    if (current == OCCUPIED && occupied >= 4)
+      return EMPTY;
     return current;
   }
 
-  static Occupation getOccupationPart2(int x, int y, List<List<Occupation>> map, int width, int height) {
+  static char getOccupationPart2(int x, int y, List<List<Character>> map, int width, int height) {
     var current = map.get(y).get(x);
-    if (current == Occupation.FLOOR)
-      return Occupation.FLOOR;
+    if (current == FLOOR)
+      return FLOOR;
 
     int occupied = 0;
     for(int walkDirX = -1; walkDirX <= 1; ++walkDirX) {
@@ -131,14 +115,14 @@ public class Main {
       }
     }
 
-    if (current == Occupation.EMPTY && occupied == 0)
-      return Occupation.OCCUPIED;
-    if (current == Occupation.OCCUPIED && occupied >= 5)
-      return Occupation.EMPTY;
+    if (current == EMPTY && occupied == 0)
+      return OCCUPIED;
+    if (current == OCCUPIED && occupied >= 5)
+      return EMPTY;
     return current;
   }
 
-  static int countSeatsInSight(int originX, int originY, List<List<Occupation>> map, int width, int height, int walkDirX, int walkDirY) {
+  static int countSeatsInSight(int originX, int originY, List<List<Character>> map, int width, int height, int walkDirX, int walkDirY) {
     int x = originX;
     int y = originY;
 
@@ -150,9 +134,9 @@ public class Main {
         return 0;
 
       var field = map.get(y).get(x);
-      if (field == Occupation.OCCUPIED)
+      if (field == OCCUPIED)
         return 1;
-      if (field == Occupation.EMPTY)
+      if (field == EMPTY)
         return 0;
     }
   }
@@ -161,14 +145,14 @@ public class Main {
     return 0 <= x && x < width && 0 <= y && y < height;
   }
 
-  static String toStringMap(List<List<Occupation>> inputMap) {
+  static String toStringMap(List<List<Character>> inputMap) {
     var mapWidth = inputMap.get(0).size();
     var mapHeight = inputMap.size();
 
     var sb = new StringBuilder();
     for (int y = 0; y < mapHeight; ++y) {
       for (int x = 0; x < mapWidth; ++x) {
-        sb.append(inputMap.get(y).get(x).representation);
+        sb.append(inputMap.get(y).get(x));
       }
       sb.append('\n');
     }
