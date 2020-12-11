@@ -47,6 +47,9 @@ public class Main {
 
     var part1 = countOccupiedSeatsIterated(initialMap, Main::getOccupationPart1);
     System.out.println("Number of occupied seats in part 1: " + part1);
+
+    var part2 = countOccupiedSeatsIterated(initialMap, Main::getOccupationPart2);
+    System.out.println("Number of occupied seats in part 2: " + part2);
   }
 
   static long countOccupiedSeatsIterated(List<List<Occupation>> initialMap, OccupationProcessor processor) {
@@ -55,13 +58,11 @@ public class Main {
     String mapStr = "";
     do {
       prevMap = mapStr;
-      System.out.println(prevMap);
+      // System.out.println(prevMap);
 
       map = iterate(map, processor);
       mapStr = toStringMap(map);
     } while (!prevMap.equals(mapStr));
-
-    System.out.println(mapStr);
 
     return map.stream()
         .flatMap(Collection::stream)
@@ -114,6 +115,50 @@ public class Main {
     if (current == Occupation.OCCUPIED && occupied >= 4)
       return Occupation.EMPTY;
     return current;
+  }
+
+  static Occupation getOccupationPart2(int x, int y, List<List<Occupation>> map, int width, int height) {
+    var current = map.get(y).get(x);
+    if (current == Occupation.FLOOR)
+      return Occupation.FLOOR;
+
+    int occupied = 0;
+    for(int walkDirX = -1; walkDirX <= 1; ++walkDirX) {
+      for(int walkDirY = -1; walkDirY <= 1; ++walkDirY) {
+        if (!(walkDirX == 0 && walkDirY == 0)) {
+          occupied += countSeatsInSight(x, y, map, width, height, walkDirX, walkDirY);
+        }
+      }
+    }
+
+    if (current == Occupation.EMPTY && occupied == 0)
+      return Occupation.OCCUPIED;
+    if (current == Occupation.OCCUPIED && occupied >= 5)
+      return Occupation.EMPTY;
+    return current;
+  }
+
+  static int countSeatsInSight(int originX, int originY, List<List<Occupation>> map, int width, int height, int walkDirX, int walkDirY) {
+    int x = originX;
+    int y = originY;
+
+    while (true) {
+      x += walkDirX;
+      y += walkDirY;
+
+      if(!isOnMap(width, height, x, y))
+        return 0;
+
+      var field = map.get(y).get(x);
+      if (field == Occupation.OCCUPIED)
+        return 1;
+      if (field == Occupation.EMPTY)
+        return 0;
+    }
+  }
+
+  static boolean isOnMap(int width, int height, int x, int y) {
+    return 0 <= x && x < width && 0 <= y && y < height;
   }
 
   static String toStringMap(List<List<Occupation>> inputMap) {
