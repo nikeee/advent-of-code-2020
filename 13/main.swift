@@ -1,3 +1,11 @@
+// Compile:
+//     swiftc main.swift
+// Run:
+//     ./main < input.txt
+// Compiler version:
+//     swiftc --version
+//     Swift version 5.3.1 (swift-5.3.1-RELEASE)
+
 import Foundation
 
 let earliestTimestamp: Int64 = Int64(readLine(strippingNewline: true)!)!
