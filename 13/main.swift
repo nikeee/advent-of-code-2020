@@ -9,10 +9,9 @@
 import Foundation
 
 let earliestTimestamp: Int64 = Int64(readLine(strippingNewline: true)!)!
-let departuresStr = readLine(strippingNewline: true)
+let departuresArray = readLine(strippingNewline: true)!.components(separatedBy: ",");
 
-let departuresArray = departuresStr!.components(separatedBy: ",");
-let departures: [Int64] = departuresArray.filter{ $0 != "x" }.map{Int64($0)!}
+let departures: [Int64] = departuresArray.filter{$0 != "x"}.map{Int64($0)!}
 
 // Part 1
 
@@ -25,7 +24,8 @@ for tCandidate in earliestTimestamp..<upperBound {
 
 		let busId = possibleDepartures.min()!
 		let timeToWait = tCandidate - earliestTimestamp
-		print ("Part 1: \(busId * timeToWait)")
+
+		print("Part 1: \(busId * timeToWait)")
 		break
 	}
 }
@@ -57,18 +57,17 @@ It looks like x is what we are looking for!
 
 // Compute the vector of remainders that correspond to the rewriting above
 let remainders = departuresArray.enumerated()
-    .filter{(index, busId) in busId != "x"}
-    .map {(index, busId) in Int64(Int(busId)! - index)}
+	.filter{(index, busId) in busId != "x"}
+	.map{(index, busId) in (Int64(index), Int64(busId)!)}
+	.map{(index, busId) in busId - index}
 
-// print ("\(departures)")
-// print ("\(remainders)")
 let part2 = chineseRemainder(departures, remainders)
 print("Part 2: \(part2)")
 
 // We assume that all numbers are coprime (since they are prime, so no need to check that).
 // This code is ported from: https://fangya.medium.com/chinese-remainder-theorem-with-python-a483de81fbb8
 func chineseRemainder(_ ns: [Int64], _ remainders: [Int64]) -> Int64 {
-	var sum: Int64 = 0
+	var sum = 0 as Int64
 	let prod = ns.reduce(1, {x, y in x * y})
 
 	for (ni, ri) in zip(ns, remainders) {
@@ -84,12 +83,11 @@ func multiplicativeInv(_ a: Int64, _ b: Int64) -> Int64 {
 		return 1
 	}
 
-	var a = a
-	var b = b
+	var (a, b) = (a, b)
 
 	let b0 = b
-	var x0: Int64 = 0
-	var x1: Int64 = 1
+	var x0 = 0 as Int64
+	var x1 = 1 as Int64
 
 	while a > 1 {
 		let q = a / b
