@@ -20,14 +20,14 @@ let upperBound = earliestTimestamp + departures.min()! + 1
 
 for tCandidate in earliestTimestamp..<upperBound {
 
-    let possibleDepartures = departures.filter{tCandidate % $0 == 0}
-    if possibleDepartures.count > 0 {
+	let possibleDepartures = departures.filter{tCandidate % $0 == 0}
+	if possibleDepartures.count > 0 {
 
-        let busId = possibleDepartures.min()!
-        let timeToWait = tCandidate - earliestTimestamp
-        print ("Part 1: \(busId * timeToWait)")
-        break
-    }
+		let busId = possibleDepartures.min()!
+		let timeToWait = tCandidate - earliestTimestamp
+		print ("Part 1: \(busId * timeToWait)")
+		break
+	}
 }
 
 // Part 2
@@ -68,36 +68,36 @@ print("Part 2: \(part2)")
 // We assume that all numbers are coprime (since they are prime, so no need to check that).
 // This code is ported from: https://fangya.medium.com/chinese-remainder-theorem-with-python-a483de81fbb8
 func chineseRemainder(_ ns: [Int64], _ remainders: [Int64]) -> Int64 {
-    var sum: Int64 = 0
-    let prod = ns.reduce(1, {x, y in x * y})
+	var sum: Int64 = 0
+	let prod = ns.reduce(1, {x, y in x * y})
 
-    for (ni, ri) in zip(ns, remainders) {
-        let p = prod / ni
-        sum += ri * multiplicativeInv(p, ni) * p
-    }
+	for (ni, ri) in zip(ns, remainders) {
+		let p = prod / ni
+		sum += ri * multiplicativeInv(p, ni) * p
+	}
 
-    return sum % prod
+	return sum % prod
 }
 
 func multiplicativeInv(_ a: Int64, _ b: Int64) -> Int64 {
-    if b == 1 {
-        return 1
-    }
+	if b == 1 {
+		return 1
+	}
 
-    var a = a
-    var b = b
+	var a = a
+	var b = b
 
-    let b0 = b
-    var x0: Int64 = 0
-    var x1: Int64 = 1
+	let b0 = b
+	var x0: Int64 = 0
+	var x1: Int64 = 1
 
-    while a > 1 {
-        let q = a / b
-        (a, b) = (b, a % b)
-        (x0, x1) = (x1 - q * x0, x0)
-    }
-    if x1 < 0 {
-        x1 += b0
-    }
-    return x1
+	while a > 1 {
+		let q = a / b
+		(a, b) = (b, a % b)
+		(x0, x1) = (x1 - q * x0, x0)
+	}
+	if x1 < 0 {
+		x1 += b0
+	}
+	return x1
 }
