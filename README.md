@@ -19,5 +19,6 @@ To see how to run the solutions of each individual day, look at its main source 
 | 11  | [Seating System](https://adventofcode.com/2020/day/11)     | [Link](11) | [Java](https://en.wikipedia.org/wiki/Java_(programming_language))       |
 | 12  | [Rain Risk](https://adventofcode.com/2020/day/12)          | [Link](12) | [Haskell](https://en.wikipedia.org/wiki/Haskell_(programming_language)) |
 | 13  | [Shuttle Search](https://adventofcode.com/2020/day/13)     | [Link](13) | [Swift](https://en.wikipedia.org/wiki/Swift_(programming_language))     |
+| 14  | [Docking Data](https://adventofcode.com/2020/day/14)       | [Link](14) | [VB.NET](https://en.wikipedia.org/wiki/Visual_Basic_.NET)               |
 
 [Solutions and language ideas of 2019](https://github.com/nikeee/advent-of-code-2019)
