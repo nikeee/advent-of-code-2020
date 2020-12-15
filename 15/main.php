@@ -7,7 +7,7 @@
 //     php --version
 //     PHP 8.0.0 (cli) (built: Dec 11 2020 08:00:05) ( NTS )
 
-ini_set('memory_limit', '2G');
+ini_set('memory_limit', '300M');
 
 $input = @trim(fgets(STDIN));
 
@@ -18,25 +18,19 @@ function memory_sequence($init_sequence) {
 
     $sequence_data = [];
     foreach ($init_sequence as $index => $value) {
-        $sequence_data[$value] = [$index, $index];
+        $sequence_data[$value] = $index + 1;
     }
 
-    $current_value = end($init_sequence);
-    $index = count($sequence_data);
+    $last_spoken = end($init_sequence);
 
-    while (true) {
-        $last_spoken_data = $sequence_data[$current_value];
+    for($index = count($sequence_data); true; ++$index) {
 
-        $number_spoken = $last_spoken_data[0] - $last_spoken_data[1];
-
-        $last_time_number_was_spoken = $sequence_data[$number_spoken] ?? [$index, $index];
-
-        $sequence_data[$number_spoken] = [$index, $last_time_number_was_spoken[0]];
+        $number_spoken = $index - ($sequence_data[$last_spoken] ?? $index);
+        $sequence_data[$last_spoken] = $index;
 
         yield [$index + 1, $number_spoken];
 
-        $current_value = $number_spoken;
-        ++$index;
+        $last_spoken = $number_spoken;
     }
 }
 
