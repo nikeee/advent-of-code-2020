@@ -21,5 +21,6 @@ To see how to run the solutions of each individual day, look at its main source 
 | 13  | [Shuttle Search](https://adventofcode.com/2020/day/13)          | [Link](13) | [Swift](https://en.wikipedia.org/wiki/Swift_(programming_language))     |
 | 14  | [Docking Data](https://adventofcode.com/2020/day/14)            | [Link](14) | [VB.NET](https://en.wikipedia.org/wiki/Visual_Basic_.NET)               |
 | 15  | [Rambunctious Recitation](https://adventofcode.com/2020/day/15) | [Link](15) | [PHP](https://en.wikipedia.org/wiki/PHP)                                |
+| 16  | [Ticket Translation](https://adventofcode.com/2020/day/16)      | [Link](16) | [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language))   |
 
 [Solutions and language ideas of 2019](https://github.com/nikeee/advent-of-code-2019)
