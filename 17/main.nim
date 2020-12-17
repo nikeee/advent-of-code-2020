@@ -14,38 +14,38 @@ for line in stdin.lines:
     lines.add(line)
 
 type
-    Space1D = set[int16]
-    Space2D = Table[int16, Space1D]
-    Space3D = Table[int16, Space2D]
-    Space4D = Table[int16, Space3D]
-    ActiveCube3D = tuple[x: int16, y: int16, z: int16]
-    ActiveCube4D = tuple[x: int16, y: int16, z: int16, w: int16]
+    Space1D = set[int8]
+    Space2D = Table[int8, Space1D]
+    Space3D = Table[int8, Space2D]
+    Space4D = Table[int8, Space3D]
+    ActiveCube3D = tuple[x: int8, y: int8, z: int8]
+    ActiveCube4D = tuple[x: int8, y: int8, z: int8, w: int8]
 
 proc initSpace1D(): Space1D = {}
-proc initSpace2D(): Space2D = initTable[int16, Space1D]()
-proc initSpace3D(): Space3D = initTable[int16, Space2D]()
-proc initSpace4D(): Space4D = initTable[int16, Space3D]()
+proc initSpace2D(): Space2D = initTable[int8, Space1D]()
+proc initSpace3D(): Space3D = initTable[int8, Space2D]()
+proc initSpace4D(): Space4D = initTable[int8, Space3D]()
 
 
-func `[]`(self: var Space2D, key: int16): var set[int16] = self.mgetOrPut(key, initSpace1D())
-func `[]`(self: var Space3D, key: int16): var Space2D = self.mgetOrPut(key, initSpace2D())
-func `[]`(self: var Space4D, key: int16): var Space3D = self.mgetOrPut(key, initSpace3D())
+func `[]`(self: var Space2D, key: int8): var set[int8] = self.mgetOrPut(key, initSpace1D())
+func `[]`(self: var Space3D, key: int8): var Space2D = self.mgetOrPut(key, initSpace2D())
+func `[]`(self: var Space4D, key: int8): var Space3D = self.mgetOrPut(key, initSpace3D())
 
 
-proc get_entry(space: var Space3D, x: int16, y: int16, z: int16): bool =
+proc get_entry(space: var Space3D, x: int8, y: int8, z: int8): bool =
     return z in space[x][y]
 
-proc get_entry(space: var Space4D, x: int16, y: int16, z: int16, w: int16): bool =
+proc get_entry(space: var Space4D, x: int8, y: int8, z: int8, w: int8): bool =
     return w in space[x][y][z]
 
 
-proc set_entry(space: var Space3D, x: int16, y: int16, z: int16, value: bool): void =
+proc set_entry(space: var Space3D, x: int8, y: int8, z: int8, value: bool): void =
     if value:
         space[x][y] = space[x][y] + {z}
     else:
         space[x][y] = space[x][y] - {z}
 
-proc set_entry(space: var Space4D, x: int16, y: int16, z: int16, w: int16, value: bool): void =
+proc set_entry(space: var Space4D, x: int8, y: int8, z: int8, w: int8, value: bool): void =
     if value:
         space[x][y][z] = space[x][y][z] + {w}
     else:
@@ -70,7 +70,7 @@ func get_active(space: var Space4D): seq[ActiveCube4D] =
     active_cubes
 
 
-func get_neighbors(space: var Space3D, origin_x: int16, origin_y: int16, origin_z: int16): int =
+func get_neighbors(space: var Space3D, origin_x: int8, origin_y: int8, origin_z: int8): int =
     var neighbors = 0
     for x in (origin_x - 1)..(origin_x + 1):
         for y in (origin_y - 1)..(origin_y + 1):
@@ -83,7 +83,7 @@ func get_neighbors(space: var Space3D, origin_x: int16, origin_y: int16, origin_
 
     neighbors
 
-func get_neighbors(space: var Space4D, origin_x: int16, origin_y: int16, origin_z: int16, origin_w: int16): int =
+func get_neighbors(space: var Space4D, origin_x: int8, origin_y: int8, origin_z: int8, origin_w: int8): int =
     var neighbors = 0
     for x in (origin_x - 1)..(origin_x + 1):
         for y in (origin_y - 1)..(origin_y + 1):
@@ -157,8 +157,8 @@ var current_space_part2 = initSpace4D()
 for y, line in lines:
     for x, c in line:
         if c == '#':
-            set_entry(current_space_part1, cast[int16](x), cast[int16](y), 0, true)
-            set_entry(current_space_part2, cast[int16](x), cast[int16](y), 0, 0, true)
+            set_entry(current_space_part1, cast[int8](x), cast[int8](y), 0, true)
+            set_entry(current_space_part2, cast[int8](x), cast[int8](y), 0, 0, true)
 
 let iterations = 6
 for i in 1..iterations:
