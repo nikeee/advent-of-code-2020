@@ -1,6 +1,5 @@
 # Advent of Code 2020
-
-I try to use a different language every day. However, if there are tasks that build upon each other (like in 2019), I'll try to stick to the same language.
+...with a different language every day.
 
 To see how to run the solutions of each individual day, look at its main source file.
 
