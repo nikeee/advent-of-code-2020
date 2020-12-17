@@ -22,5 +22,13 @@ To see how to run the solutions of each individual day, look at its main source 
 | 15  | [Rambunctious Recitation](https://adventofcode.com/2020/day/15) | [Link](15) | [PHP](https://en.wikipedia.org/wiki/PHP)                                |
 | 16  | [Ticket Translation](https://adventofcode.com/2020/day/16)      | [Link](16) | [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language))   |
 | 17  | [Conway Cubes](https://adventofcode.com/2020/day/17)            | [Link](17) | [Nim](https://en.wikipedia.org/wiki/Nim_(programming_language))         |
+| 18  | [TODO](https://adventofcode.com/2020/day/18)                    | [Link](18) | [TODO]()                                                                |
+| 19  | [TODO](https://adventofcode.com/2020/day/19)                    | [Link](19) | [TODO]()                                                                |
+| 20  | [TODO](https://adventofcode.com/2020/day/20)                    | [Link](20) | [TODO]()                                                                |
+| 21  | [TODO](https://adventofcode.com/2020/day/21)                    | [Link](21) | [TODO]()                                                                |
+| 22  | [TODO](https://adventofcode.com/2020/day/22)                    | [Link](22) | [TODO]()                                                                |
+| 23  | [TODO](https://adventofcode.com/2020/day/23)                    | [Link](23) | [TODO]()                                                                |
+| 24  | [TODO](https://adventofcode.com/2020/day/24)                    | [Link](24) | [TODO]()                                                                |
+| 25  | [TODO](https://adventofcode.com/2020/day/25)                    | [Link](25) | [TODO]()                                                                |
 
 [Solutions and language ideas of 2019](https://github.com/nikeee/advent-of-code-2019)
