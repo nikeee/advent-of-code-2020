@@ -4,11 +4,12 @@
 //     ./a.out < input.txt
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 int *read_input(const size_t input_size)
 {
-	int *numbers = calloc(sizeof(int), input_size);
+	unsigned int *numbers = calloc(sizeof(unsigned int), input_size);
 
 	int res = EOF;
 	size_t index = 0;
@@ -27,26 +28,35 @@ int *read_input(const size_t input_size)
 	return numbers;
 }
 
-void part_1(const int *input, const size_t input_size)
+void part_1(const unsigned int *input, const size_t input_size)
 {
+	unsigned int max_value = 0;
+	for (size_t a = 0; a < input_size; ++a)
+		if (input[a] > max_value)
+			max_value = input[a];
+
+	bool *lookup_table = calloc(max_value + 1, sizeof(bool));
+
 	for (size_t a = 0; a < input_size; ++a)
 	{
 		const int candidate_a = input[a];
-		for (size_t b = 0; b < input_size; ++b)
+		const int candidate_b = 2020 - candidate_a;
+		if (lookup_table[candidate_b])
 		{
-			const int candidate_b = input[b];
-
-			if (candidate_a + candidate_b == 2020)
-			{
-				int solution = candidate_a * candidate_b;
-				printf("Part 1: %d * %d = %d\n", candidate_a, candidate_b, solution);
-				return;
-			}
+			int solution = candidate_b * candidate_a;
+			printf("Part 1: %d * %d = %d\n", candidate_a, candidate_b, solution);
+			break;
+		}
+		else
+		{
+			lookup_table[candidate_a] = true;
 		}
 	}
+
+	free(lookup_table);
 }
 
-void part_2(const int *input, const size_t input_size)
+void part_2(const unsigned int *input, const size_t input_size)
 {
 	for (size_t a = 0; a < input_size; ++a)
 	{
@@ -72,7 +82,7 @@ void part_2(const int *input, const size_t input_size)
 int main(int argc, char *argv[])
 {
 	const size_t input_size = 200;
-	int *input = read_input(input_size);
+	unsigned int *input = read_input(input_size);
 
 	part_1(input, input_size);
 	part_2(input, input_size);
