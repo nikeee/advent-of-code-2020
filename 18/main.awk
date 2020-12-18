@@ -27,15 +27,9 @@ function part2(expression) {
     return part2_evaluate_root(expression, state);
 }
 
-function consumeChar(state) {
-    state["position"] = state["position"] + 1;
-}
-function consumeString(state, str) {
-    state["position"] = state["position"] + length(str);
-}
-function current(value, state) {
-    return substr(value, state["position"], 1);
-}
+function consumeChar(state) { state["position"] = state["position"] + 1; }
+function consumeString(state, str) { state["position"] = state["position"] + length(str); }
+function current(value, state) { return substr(value, state["position"], 1); }
 
 # Local variables don't exist in AWK
 # We use this workaround: https://stackoverflow.com/a/5209695
