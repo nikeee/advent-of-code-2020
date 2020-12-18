@@ -3,17 +3,17 @@
 # Runtime version:
 #     awk --version
 #     GNU Awk 5.0.1, API: 2.0 (GNU MPFR 4.1.0, GNU MP 6.2.0)
-    
 
-# Grammar:
-# root := expression (('+' | '*') expression)*
-# expression := paren_expression | number
-# paren_expression := '(' root ')'
+
+# Part 1 grammar:
+#     part1_root := part1_expression (('+' | '*') part1_expression)*
+#     part1_expression := part1_paren_expression | part1_number
+#     part1_paren_expression := '(' part1_root ')'
 
 
 function part1(expression) {
     state["position"] = 1
-    return evaluate_root(expression, state)
+    return part1_evaluate_root(expression, state)
 }
 
 function consumeChar(state) {
@@ -28,9 +28,9 @@ function current(value, state) {
 
 # Local variables don't exist in AWK
 # We use this workaround: https://stackoverflow.com/a/5209695
-function evaluate_root(value, state, res) {
+function part1_evaluate_root(value, state, res) {
 
-    res = evaluate_expression(value, state)
+    res = part1_evaluate_expression(value, state)
 
     while (state["position"] < length(value)) {
 
@@ -42,11 +42,11 @@ function evaluate_root(value, state, res) {
         switch (first_char) {
             case "+":
                 consumeChar(state);
-                res += evaluate_expression(value, state)
+                res += part1_evaluate_expression(value, state)
                 break;
             case "*":
                 consumeChar(state);
-                res *= evaluate_expression(value, state)
+                res *= part1_evaluate_expression(value, state)
                 break;
         }
     }
@@ -54,9 +54,9 @@ function evaluate_root(value, state, res) {
     return res
 }
 
-function evaluate_expression(value, state) {
+function part1_evaluate_expression(value, state) {
     if (current(value, state) == "(")
-        return evaluate_paren_expression(value, state);
+        return part1_evaluate_paren_expression(value, state);
 
     number_start = substr(value, state["position"]);
     number = int(number_start);
@@ -65,9 +65,9 @@ function evaluate_expression(value, state) {
     return number;
 }
 
-function evaluate_paren_expression(value, state, res) {
+function part1_evaluate_paren_expression(value, state, res) {
     consumeChar(state); # consume '('
-    res = evaluate_root(value, state)
+    res = part1_evaluate_root(value, state)
     consumeChar(state); # consume ')'
     return res;
 }
