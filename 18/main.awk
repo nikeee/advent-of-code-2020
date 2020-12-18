@@ -7,13 +7,13 @@
 
 # Part 1 grammar:
 #     part1_root := part1_expression (('+' | '*') part1_expression)*
-#     part1_expression := part1_paren_expression | part1_number
+#     part1_expression := part1_paren_expression | number
 #     part1_paren_expression := '(' part1_root ')'
 
 # Part 2 grammar:
 #     part2_root := part2_sum ('*' part2_sum)*
 #     part2_sum := part2_expression ('*' part2_expression)*
-#     part2_expression := part2_paren_expression | part2_number
+#     part2_expression := part2_paren_expression | number
 #     part2_paren_expression := '(' part2_root ')'
 
 
