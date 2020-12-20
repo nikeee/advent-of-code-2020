@@ -23,7 +23,7 @@ To see how to run the solutions of each individual day, look at its main source 
 | 16  | [Ticket Translation](https://adventofcode.com/2020/day/16)      | [Link](16) | [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language))   |
 | 17  | [Conway Cubes](https://adventofcode.com/2020/day/17)            | [Link](17) | [Nim](https://en.wikipedia.org/wiki/Nim_(programming_language))         |
 | 18  | [Operation Order](https://adventofcode.com/2020/day/18)         | [Link](18) | [AWK](https://en.wikipedia.org/wiki/AWK)                                |
-| 19  | [](https://adventofcode.com/2020/day/19)                        | [](19)     |                                                                         |
+| 19  | [Monster Messages](https://adventofcode.com/2020/day/19)        | [Link](19) | [Perl](https://en.wikipedia.org/wiki/Perl)                              |
 | 20  | [](https://adventofcode.com/2020/day/20)                        | [](20)     |                                                                         |
 | 21  | [](https://adventofcode.com/2020/day/21)                        | [](21)     |                                                                         |
 | 22  | [](https://adventofcode.com/2020/day/22)                        | [](22)     |                                                                         |
