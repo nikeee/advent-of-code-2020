@@ -27,27 +27,30 @@ sub ParseRules {
 	return %parsedRules;
 }
 
-my %parsedRules = ParseRules(@rules);
-
 # Part 1
 # The rules of the input are basically a context free grammar (CFG).
 # But as the grammar does not contain a loop, it can also be represented as a regular expression.
 # We could do it the hard way and basically implement regular expression matching, but we're using Perl here.
 
 sub CreatePattern {
-	my ($ruleNumber, %rules) = @_;
+	my ($ruleNumber, $recursionDepth, %rules) = @_;
+
+	if ($recursionDepth > 100) {
+		# See notes on part 2 about this
+		return '';
+	}
 
 	my $optionsStr = $rules{$ruleNumber};
 	$optionsStr =~ s/^\s+|\s+$//g; # trim
 	my @options = split("\\|", $optionsStr);
 
-	my @optionPatterns = map { CreateOptionPattern($_, %rules) } @options;
+	my @optionPatterns = map { CreateOptionPattern($_, $recursionDepth, %rules) } @options;
 
 	return '(' . join("|", @optionPatterns) . ')';
 }
 
 sub CreateOptionPattern {
-	my ($option, %rules) = @_;
+	my ($option, $recursionDepth, %rules) = @_;
 	$option =~ s/^\s+|\s+$//g; # trim
 
 	my @descendingRulesStr = split(" ", $option);
@@ -63,13 +66,39 @@ sub CreateOptionPattern {
 	my $pattern = '';
 	foreach (@descendingRulesStr) {
 		my $descendingRuleNumber = $_;
-		$pattern .= CreatePattern($descendingRuleNumber, %rules);
+		$pattern .= CreatePattern($descendingRuleNumber, $recursionDepth + 1, %rules);
 	}
 	return $pattern;
 }
 
-my $pattern = CreatePattern(0, %parsedRules);
+my %parsedRules;
+my $pattern;
 
-my @validWords = grep(/^$pattern$/, @words);
-my $part1 = scalar @validWords;
+%parsedRules = ParseRules(@rules);
+
+$pattern = CreatePattern(0, 0, %parsedRules);
+$pattern = qr/^$pattern$/; # Perf trick: Force compilation of regex: https://stackoverflow.com/a/53339431
+
+my $part1 = scalar grep(/$pattern/, @words);
 print "Number of valid words; Part 1: $part1\n";
+
+# Part 2
+# We now have loops inside the grammar. This means, we cannot represent it as a regular expression anymore.
+# However, the task hints this:
+#     "you only need to handle the rules you have"
+
+# Let's be hacky here: The input words could maybe be validated by using a finite representation of the CFG.
+# This means we can still try to use regex, while being aware that it doesn't cover all words in the set of our language.
+# We just hope it covers enough.
+# Bonus: Our solution will still yield the same results for part 1.
+
+push @rules, "8: 42 | 42 8";
+push @rules, "11: 42 31 | 42 11 31";
+
+%parsedRules = ParseRules(@rules);
+
+$pattern = CreatePattern(0, 0, %parsedRules);
+$pattern = qr/^$pattern$/; # Perf trick: Force compilation of regex: https://stackoverflow.com/a/53339431
+
+my $part2 = scalar grep(/$pattern/, @words);
+print "Number of valid words (with loops in grammar); Part 2: $part2\n";
