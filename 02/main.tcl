@@ -1,5 +1,7 @@
+#!/usr/bin/env tclsh
+
 # Run:
-#     tclsh main.tcl
+#     ./main.tcl
 
 set input [open "input.txt" r]
 set lines [split [read $input] "\n"]
