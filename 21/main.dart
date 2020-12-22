@@ -46,6 +46,13 @@ void main(List<String> arguments) async {
 
   var part1 = foods.map((f) => safeIngredients.intersection(f[0]).length).fold(0, (p, c) => p + c);
   print("Number of safe ingredients appering; Part 1: ${part1}");
+
+  var sortedResolvedAllergens = resolvedAllergens.entries.toList();
+  sortedResolvedAllergens.sort((a, b) => a.key.compareTo(b.key));
+  var dangerousIngredients = sortedResolvedAllergens.map((entry) => entry.value).join(',');
+
+  print("What is your canonical dangerous ingredient list; Part 2: ${dangerousIngredients}");
+
 }
 
 List processLine(String line) {
