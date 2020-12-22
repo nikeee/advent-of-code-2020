@@ -25,7 +25,7 @@ To see how to run the solutions of each individual day, look at its main source 
 | 18  | [Operation Order](https://adventofcode.com/2020/day/18)         | [Link](18) | [AWK](https://en.wikipedia.org/wiki/AWK)                                |
 | 19  | [Monster Messages](https://adventofcode.com/2020/day/19)        | [Link](19) | [Perl](https://en.wikipedia.org/wiki/Perl)                              |
 | 20  | [Jurassic Jigsaw](https://adventofcode.com/2020/day/20)         | [Link](20) | [JavaScript](https://en.wikipedia.org/wiki/JavaScript)                  |
-| 21  | [](https://adventofcode.com/2020/day/21)                        | [](21)     |                                                                         |
+| 21  | [Allergen Assessment](https://adventofcode.com/2020/day/21)     | [](21)     |                                                                         |
 | 22  | [](https://adventofcode.com/2020/day/22)                        | [](22)     |                                                                         |
 | 23  | [](https://adventofcode.com/2020/day/23)                        | [](23)     |                                                                         |
 | 24  | [](https://adventofcode.com/2020/day/24)                        | [](24)     |                                                                         |
