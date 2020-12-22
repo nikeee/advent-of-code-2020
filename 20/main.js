@@ -45,8 +45,8 @@ class Tile {
 		return new Tile(this.id, contents.map(row => row.join("")));
 	}
 
-	get verticalFlipped() { return new Tile(this.id, [...this.content].reverse()); }
-	get horizontalFlipped() { return this.verticalFlipped.rotated.rotated; }
+	get verticalFlipped() { return this._verticalFlipped ?? (this._verticalFlipped = new Tile(this.id, [...this.content].reverse())); }
+	get horizontalFlipped() { return this._horizontalFlipped ?? (this._horizontalFlipped = this.verticalFlipped.rotated.rotated); }
 
 	getVariations() {
 		const rotated = [
@@ -64,6 +64,14 @@ class Tile {
 			res.push(t.horizontalFlipped.verticalFlipped);
 		}
 		return removeDuplicates(res);
+	}
+
+	/** Needed for part 2 */
+	shrink() {
+		const content = this.content
+			.slice(1, this.content.length - 1)
+			.map(line => line.slice(1, line.length - 1))
+		return new Tile(this.id, content);
 	}
 
 	/**
@@ -178,6 +186,128 @@ const corners = [
 	alignedTiles[0][size - 1],
 	alignedTiles[size - 1][size - 1],
 ];
-const part1 = corners.map(c => c.id).reduce((a,b) => a * b);
+const part1 = corners.map(c => c.id).reduce((a, b) => a * b);
 
 console.log(`IDs of tiles in corners; Part 1: ${part1} (${corners[0].id} * ${corners[1].id} * ${corners[2].id} * ${corners[3].id})`)
+
+
+/** @param {TileMap} tileMap */
+function createTileFromTileMap(tileMap) {
+	const shrinkedMap = tileMap.map(row => row.map(tile => tile.shrink()));
+	const tileSize = shrinkedMap[0][0].width;
+
+	const mapWidth = tileSize * shrinkedMap.length;
+	const mapHeight = mapWidth;
+
+	const rows = [];
+	for (let y = 0; y < mapHeight; ++y) {
+		const row = [];
+		for (let x = 0; x < mapWidth /* width == height */; ++x) {
+			const affectedTile = shrinkedMap[(y / tileSize) | 0][(x / tileSize) | 0];
+			const [tileX, tileY] = [x % tileSize, y % tileSize]
+
+			const value = affectedTile.content[tileY][tileX];
+			row.push(value);
+		}
+		rows.push(row.join(''));
+	}
+	return new Tile(1337, rows);
+}
+
+/**
+ * @param {Tile} tile
+ * @param {string[]} pattern
+ */
+function findAndPatchPattern(tile, pattern) {
+	const patternPositions = findPattern(tile, pattern);
+	if (patternPositions.length === 0)
+		return undefined;
+
+	const mutableMap = tile.content.map(row => [...row]);
+	for (let patternY = 0; patternY < pattern.length; ++patternY) {
+		for (let patternX = 0; patternX < pattern[0].length; ++patternX) {
+			const valueInPattern = pattern[patternY][patternX];
+
+			if (valueInPattern === "#") {
+				for (const [px, py] of patternPositions) {
+					const [tileX, tileY] = [px + patternX, py + patternY];
+					mutableMap[tileY][tileX] = "O";
+				}
+			}
+		}
+	}
+	return new Tile(1338, mutableMap.map(row => row.join("")));
+}
+
+/**
+ * @param {Tile} tile
+ * @param {string[]} pattern
+ */
+function findPattern(tile, pattern) {
+	const res = [];
+	for (let y = 0; y < tile.height; ++y) {
+		for (let x = 0; x < tile.width; ++x) {
+			if (patternMatchesAt(tile, pattern, x, y))
+				res.push([x, y]);
+		}
+	}
+	return res;
+}
+
+/**
+ * @param {Tile} tile
+ * @param {string[]} pattern
+ * @param {number} originX
+ * @param {number} originY
+ */
+function patternMatchesAt(tile, pattern, originX, originY) {
+	for (let patternY = 0; patternY < pattern.length; ++patternY) {
+		for (let patternX = 0; patternX < pattern[0].length; ++patternX) {
+
+			const valueInPattern = pattern[patternY][patternX];
+			const [tileX, tileY] = [originX + patternX, originY + patternY];
+
+			if (tileY >= tile.height)
+				return false;
+			if (tileX >= tile.width)
+				return false;
+
+			if (valueInPattern === "#") {
+				const valueInTile = tile.content[tileY][tileX];
+				if (valueInPattern !== valueInTile)
+					return false;
+			}
+		}
+	}
+	return true;
+}
+
+/** @param {Tile} tile */
+function countOccurrences(tile, char) {
+	let s = 0;
+	for (const row of tile.content) {
+		for (let i = 0; i < row.length; ++i)
+			s += row[i] === char ? 1 : 0;
+	}
+	return s;
+}
+
+const pattern = [
+	"                  # ",
+	"#    ##    ##    ###",
+	" #  #  #  #  #  #   ",
+];
+
+
+const reconstructedImage = createTileFromTileMap(alignedTiles);
+
+for(const variation of reconstructedImage.getVariations()) {
+	const tileWithPatternRemoved = findAndPatchPattern(variation, pattern);
+
+	if(tileWithPatternRemoved) {
+		// tileWithPatternRemoved.print();
+
+		const part2 = countOccurrences(tileWithPatternRemoved, "#");
+		console.log(`Number of occurrences of # when disregarding pattern; Part 2: ${part2}`);
+	}
+}
