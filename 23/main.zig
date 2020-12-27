@@ -14,12 +14,6 @@ fn MinMax(comptime T: type) type {
         max: T,
     };
 }
-fn RemoveAfterResult(comptime T: type) type {
-    return struct {
-        removed_values: std.ArrayList(T),
-        new_head: *DoublyLinkedCircularList(T).Node,
-    };
-}
 
 fn DoublyLinkedCircularList(comptime T: type) type {
     return struct {
@@ -29,24 +23,13 @@ fn DoublyLinkedCircularList(comptime T: type) type {
             value: T,
         };
         allocator: *std.mem.Allocator,
+        node_map: std.AutoHashMap(T, *Node),
         head: ?*Node,
 
         pub fn get_node(self: DoublyLinkedCircularList(T), value: T) ?*Node {
 
-            const head = self.head.?;
+            return self.node_map.getValue(value);
 
-            if (head.value == value) {
-                return head;
-            }
-
-            var current = head.next;
-            while (current != null and current != self.head) {
-                if (current.?.value == value) {
-                    return current.?;
-                }
-                current = current.?.next;
-            }
-            return null;
         }
 
         pub fn get_values_after(self: DoublyLinkedCircularList(T), value: T) !std.ArrayList(T) {
@@ -97,7 +80,7 @@ fn DoublyLinkedCircularList(comptime T: type) type {
             };
         }
 
-        pub fn insert_values(self: DoublyLinkedCircularList(T), preceeding_node: *Node, values: []const u8) !void {
+        pub fn insert_values(self: *DoublyLinkedCircularList(T), preceeding_node: *Node, values: []const T) !void {
             const new_last = preceeding_node.next.?;
             new_last.prev = null;
 
@@ -106,6 +89,7 @@ fn DoublyLinkedCircularList(comptime T: type) type {
                 const item = try self.allocator.create(Node);
                 item.value = v;
                 item.prev = current_prev;
+                _ = try self.node_map.put(v, item);
 
                 current_prev.next = item;
                 current_prev = item;
@@ -115,7 +99,7 @@ fn DoublyLinkedCircularList(comptime T: type) type {
             new_last.prev = current_prev;
         }
 
-        pub fn remove_after(self: DoublyLinkedCircularList(T), start_value: T, count: usize) !RemoveAfterResult(T) {
+        pub fn remove_after(self: *DoublyLinkedCircularList(T), start_value: T, count: usize) !std.ArrayList(T) {
             var set_head = false;
 
             var node_to_remove: *Node = self.get_node(start_value).?.next.?;
@@ -139,15 +123,17 @@ fn DoublyLinkedCircularList(comptime T: type) type {
                 set_head = true;
             }
 
+            for (removed_values.items) |rv| {
+                _ = self.node_map.remove(rv);
+            }
+
             const new_next = node_to_remove.next.?;
 
             new_next.prev = pre_node;
             pre_node.next = new_next;
 
-            return RemoveAfterResult(T){
-                .removed_values = removed_values,
-                .new_head = (if(set_head) new_next else self.head.?),
-            };
+            self.head = (if(set_head) new_next else self.head.?);
+            return removed_values;
         }
 
         pub fn print(self: DoublyLinkedCircularList(T)) void {
@@ -166,18 +152,20 @@ fn DoublyLinkedCircularList(comptime T: type) type {
     };
 }
 
-fn build_list(allocator: *std.mem.Allocator, input: []const u8) !DoublyLinkedCircularList(u8) {
+fn build_list(comptime T: type, allocator: *std.mem.Allocator, input: []const T) !DoublyLinkedCircularList(T) {
 
-    var head: ?*DoublyLinkedCircularList(u8).Node = null;
-    var prev: ?*DoublyLinkedCircularList(u8).Node = null;
-    var last_item: ?*DoublyLinkedCircularList(u8).Node = null;
+    var head: ?*DoublyLinkedCircularList(T).Node = null;
+    var prev: ?*DoublyLinkedCircularList(T).Node = null;
+    var last_item: ?*DoublyLinkedCircularList(T).Node = null;
+    var node_map = std.AutoHashMap(T, *DoublyLinkedCircularList(T).Node).init(allocator);
 
     for (input) |number| {
 
-        const item = try allocator.create(DoublyLinkedCircularList(u8).Node);
+        const item = try allocator.create(DoublyLinkedCircularList(T).Node);
         item.value = number;
         item.prev = prev;
         item.next = null;
+        _ = try node_map.put(number, item);
 
         if (prev) |p| {
             p.next = item;
@@ -197,45 +185,83 @@ fn build_list(allocator: *std.mem.Allocator, input: []const u8) !DoublyLinkedCir
         li.next = head;
     }
 
-    return DoublyLinkedCircularList(u8) {
+    return DoublyLinkedCircularList(T) {
         .allocator = allocator,
         .head = head,
+        .node_map = node_map,
     };
 }
 
-fn part1(allocator: *std.mem.Allocator, numbers: [] const u8) !std.ArrayList(u8) {
-    var list = try build_list(allocator, numbers);
+fn get_destination_entry(comptime T: type, numbers: *DoublyLinkedCircularList(T), min_max: MinMax(T), current_cup: T) *DoublyLinkedCircularList(T).Node {
+    var destination_value = current_cup - 1;
+    var destination_entry: ?*DoublyLinkedCircularList(T).Node = null;
+    while (destination_entry == null) {
+        if (destination_value < min_max.min) {
+            destination_value = min_max.max;
+        }
 
+        destination_entry = numbers.get_node(destination_value);
+        if (destination_entry == null) {
+            destination_value -= 1;
+        }
+    }
+    return destination_entry.?;
+}
+
+
+fn part1(allocator: *std.mem.Allocator, numbers: []const u8) !std.ArrayList(u8) {
+    var list = try build_list(u8, allocator, numbers);
     const min_max = list.get_min_and_max_value();
 
     var current_cup: u8 = numbers[0];
-    var moves: i32 = 0;
-
-    while (moves < 100) {
+    var moves: u32 = 0;
+    while (moves < 100) : (moves += 1) {
         const cups_removed = try list.remove_after(current_cup, 3);
-        list.head = cups_removed.new_head;
 
-        var destination_value = current_cup - 1;
-        var destination_entry: ?*DoublyLinkedCircularList(u8).Node = null;
-        while (destination_entry == null) {
-            if (destination_value < min_max.min) {
-                destination_value = min_max.max;
-            }
+        const destination_entry = get_destination_entry(u8, &list, min_max, current_cup);
 
-            destination_entry = list.get_node(destination_value);
-            if (destination_entry == null) {
-                destination_value -= 1;
-            }
-        }
-
-        try list.insert_values(destination_entry.?, cups_removed.removed_values.items);
+        try list.insert_values(destination_entry, cups_removed.items);
 
         current_cup = list.get_node(current_cup).?.next.?.value;
-
-        moves += 1;
     }
 
     return try list.get_values_after(1);
+}
+
+fn part2_move(cups: *DoublyLinkedCircularList(u32), min_max: MinMax(u32), current_cup: u32) !u32 {
+    const removed_values = try cups.remove_after(current_cup, 3);
+
+    const destination_entry = get_destination_entry(u32, cups, min_max, current_cup);
+
+    try cups.insert_values(destination_entry, removed_values.items);
+
+    return cups.get_node(current_cup).?.next.?.value;
+}
+
+fn part2(allocator: *std.mem.Allocator, numbers: []const u8) !u64 {
+    var part2_numbers = std.ArrayList(u32).init(allocator);
+    for (numbers) |n| {
+        try part2_numbers.append(n);
+    }
+
+    var index: u32 = 10;
+    while (index <= 1000000) : (index += 1) {
+        try part2_numbers.append(index);
+    }
+
+    var list = try build_list(u32, allocator, part2_numbers.items);
+    const min_max = list.get_min_and_max_value();
+
+    var current_cup: u32 = numbers[0];
+    var moves: u32 = 0;
+    while (moves < 10000000) : (moves += 1) {
+        current_cup = try part2_move(&list, min_max, current_cup);
+    }
+
+    const one = list.get_node(1).?;
+    const next_to_one: u64 = one.next.?.value;
+    const next_to_next_to_one: u64 = one.next.?.next.?.value;
+    return next_to_one * next_to_next_to_one;
 }
 
 pub fn main() !void {
@@ -260,10 +286,12 @@ pub fn main() !void {
     }
 
     const values_after_1 = try part1(allocator, numbers.items);
-    std.debug.warn("Cup values after 100 moves, excluding but starting at 1; Part 1: ", .{});
+    try stdout.print("Cup values after 100 moves, excluding but starting at 1; Part 1: ", .{});
     for (values_after_1.items) |v| {
-        std.debug.warn("{}", .{v});
+        try stdout.print("{}", .{v});
     }
-    std.debug.warn("\n", .{});
+    try stdout.print("\n", .{});
 
+    const part2_solution = try part2(allocator, numbers.items);
+    try stdout.print("Cup values after 1000000 moves etc.; Part 2: {}\n", .{part2_solution});
 }
