@@ -203,42 +203,15 @@ fn build_list(allocator: *std.mem.Allocator, input: []const u8) !DoublyLinkedCir
     };
 }
 
-pub fn main() !void {
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer arena.deinit();
-    const allocator = &arena.allocator;
-
-    const stdout = std.io.getStdOut().outStream();
-    const stdin = std.io.getStdIn();
-
-    var line_buffer: [20]u8 = undefined;
-    const amt = try stdin.read(&line_buffer);
-    if (amt == line_buffer.len) {
-        try stdout.print("Input too long.\n", .{});
-        return;
-    }
-
-    const line = std.mem.trimRight(u8, line_buffer[0..amt], "\n");
-    var numbers = std.ArrayList(u8).init(allocator);
-
-    for (line) |c| {
-        try numbers.append(c - 48);
-    }
-
-    var list = try build_list(allocator, numbers.items);
-    // list.print();
+fn part1(allocator: *std.mem.Allocator, numbers: [] const u8) !std.ArrayList(u8) {
+    var list = try build_list(allocator, numbers);
 
     const min_max = list.get_min_and_max_value();
 
-    var current_cup: u8 = numbers.items[0];
+    var current_cup: u8 = numbers[0];
     var moves: i32 = 0;
 
     while (moves < 100) {
-        // std.debug.warn("current_cup: {}\n", .{current_cup});
-
-        // list.print();
-        // std.debug.warn("\n", .{});
-
         const cups_removed = try list.remove_after(current_cup, 3);
         list.head = cups_removed.new_head;
 
@@ -262,9 +235,35 @@ pub fn main() !void {
         moves += 1;
     }
 
-    const values_after_1 = try list.get_values_after(1);
+    return try list.get_values_after(1);
+}
+
+pub fn main() !void {
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    const allocator = &arena.allocator;
+
+    const stdout = std.io.getStdOut().outStream();
+    const stdin = std.io.getStdIn();
+
+    var line_buffer: [20]u8 = undefined;
+    const amt = try stdin.read(&line_buffer);
+    if (amt == line_buffer.len) {
+        try stdout.print("Input too long.\n", .{});
+        return;
+    }
+
+    const line = std.mem.trimRight(u8, line_buffer[0..amt], "\n");
+    var numbers = std.ArrayList(u8).init(allocator);
+    for (line) |c| {
+        try numbers.append(c - 48);
+    }
+
+    const values_after_1 = try part1(allocator, numbers.items);
     std.debug.warn("Cup values after 100 moves, excluding but starting at 1; Part 1: ", .{});
     for (values_after_1.items) |v| {
         std.debug.warn("{}", .{v});
     }
+    std.debug.warn("\n", .{});
+
 }
