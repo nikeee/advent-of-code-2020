@@ -27,7 +27,7 @@ To see how to run the solutions of each individual day, look at its main source 
 | 20  | [Jurassic Jigsaw](https://adventofcode.com/2020/day/20)         | [Link](20) | [JavaScript](https://en.wikipedia.org/wiki/JavaScript)                  |
 | 21  | [Allergen Assessment](https://adventofcode.com/2020/day/21)     | [Link](21) | [Dart](https://en.wikipedia.org/wiki/Dart_(programming_language))       |
 | 22  | [Crab Combat](https://adventofcode.com/2020/day/22)             | [Link](22) | [Crystal](https://en.wikipedia.org/wiki/Crystal_(programming_language)) |
-| 23  | [](https://adventofcode.com/2020/day/23)                        | [](23)     |                                                                         |
+| 23  | [Crab Cups](https://adventofcode.com/2020/day/23)               | [Link](23) | [Zig](https://en.wikipedia.org/wiki/Zig_(programming_language))         |
 | 24  | [](https://adventofcode.com/2020/day/24)                        | [](24)     |                                                                         |
 | 25  | [](https://adventofcode.com/2020/day/25)                        | [](25)     |                                                                         |
 
