@@ -45,10 +45,10 @@ However, the older the language, the more unusual it is. It seems that newer lan
 ### JavaScript
 JavaScript could need some custom value types that can be used as keys in a `Map` or elements in a `Set`.
 Classes don't provide `equals`/`hashCode` that would make this scenario possible.
-There currently is a [proposal](https://github.com/tc39/proposal-record-tuple) to add this to the language (for records and tuples).
+There currently is a [proposal](https://github.com/tc39/proposal-record-tuple) to add this to the language (as records and tuples).
 
 ### Python's `map`/`filter`/etc
-Writing this in Python feels like the wrong way since you have to think inside-out.
+Writing this in Python feels like the wrong way around since you have to think inside-out.
 Being able to call `.map` etc. on lists would make the code much more readable.
 Also, some kind of pipeline operator [like F#'s `|>`](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/symbol-and-operator-reference/) could help.
 [There seems to be interest in this](https://www.reddit.com/r/Python/comments/4a83ip/python_pipe_operator_4_years_later/), but no PEP has surfaced yet.
@@ -60,15 +60,19 @@ Also, some kind of pipeline operator [like F#'s `|>`](https://docs.microsoft.com
 - Intuitive (at least for me)
 - No GC; automatic memory-management and ref-counted
 - Time to get started: really fast
+- Nice documenation
+- Heavily inspired by Go; but only the good parts it seems
+- The stdlib is simple and offers a lot for that early stage
 
 #### [Zig](https://ziglang.org)
 - Manual memory management
 - Nice error handling (errors being part of the return _type_ of a function, not the function signature etc.)
 - Interesint type system
 - As close to metal as C; seems like a good alternative to it
+- Odd: The entire documentation basically consists of unit tests; this could be improved
 
 #### [Crystal](https://crystal-lang.org)
-- Syntax ruby-like
+Alghough it has a Ruby-like syntax, it was easier to pick up than I thought it would be (for me).
 
 ### Somewhat strange language: [Haxe](https://haxe.org)
 I get that it is a cross-platform language. It seems that it hasn't learned from Java.
