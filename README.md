@@ -53,7 +53,7 @@ Being able to call `.map` etc. on lists would make the code much more readable.
 Also, some kind of pipeline operator [like F#'s `|>`](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/symbol-and-operator-reference/) could help.
 [There seems to be interest in this](https://www.reddit.com/r/Python/comments/4a83ip/python_pipe_operator_4_years_later/), but no PEP has surfaced yet.
 
-### Interesing languages to try out
+### Interesting languages to try out
 
 #### [V](https://vlang.io)
 - Compiles really fast
@@ -67,7 +67,7 @@ Also, some kind of pipeline operator [like F#'s `|>`](https://docs.microsoft.com
 #### [Zig](https://ziglang.org)
 - Manual memory management
 - Nice error handling (errors being part of the return _type_ of a function, not the function signature etc.)
-- Interesint type system
+- Interesting type system that offers compiletime and runtime checks
 - As close to metal as C; seems like a good alternative to it
 - Odd: The entire documentation basically consists of unit tests; this could be improved
 
