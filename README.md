@@ -30,5 +30,45 @@ To see how to run the solutions of each individual day, look at its main source 
 | 23  | [Crab Cups](https://adventofcode.com/2020/day/23)               | [Link](23) | [Zig](https://en.wikipedia.org/wiki/Zig_(programming_language))         |                                                                                                                               |
 | 24  | [Lobby Layout](https://adventofcode.com/2020/day/24)            | [Link](24) | [Haxe](https://en.wikipedia.org/wiki/Haxe)                              |                                                                                                                               |
 | 25  | [Combo Breaker](https://adventofcode.com/2020/day/25)           | [Link](25) | [V](https://vlang.io)                                                   | Breaking [DH Key-Exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange)                                 |
-
 [Solutions and language ideas of 2019](https://github.com/nikeee/advent-of-code-2019)
+
+## Conclusion
+The intention to use a different language on each day was to try out new and old languages.
+A huge part of this gives an idea of how hard it is to get started with the respective language.
+Also, it may indicate what each language lacks or performes well in.
+
+### General Observations
+The older the language, the harder it seems to maintain good software engineering practices (for example: Perl, AWK).
+However, the older the language, the more unusual it is. It seems that newer languages converge to each other (for example: Go, V, Dart).
+
+### JavaScript
+JavaScript could need some custom value types that can be used as keys in a `Map` or elements in a `Set`.
+Classes don't provide `equals`/`hashCode` that would make this scenario possible.
+There currently is a [proposal](https://github.com/tc39/proposal-record-tuple) to add this to the language (for records and tuples).
+
+### Python's `map`/`filter`/etc
+Writing this in Python feels like the wrong way since you have to think inside-out.
+Being able to call `.map` etc. on lists would make the code much more readable.
+Also, some kind of pipeline operator [like F#'s `|>`](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/symbol-and-operator-reference/) could help.
+[There seems to be interest in this](https://www.reddit.com/r/Python/comments/4a83ip/python_pipe_operator_4_years_later/), but no PEP has surfaced yet.
+
+### Interesing languages to try out
+
+#### [V](https://vlang.io)
+- Compiles really fast
+- Intuitive (at least for me)
+- No GC; automatic memory-management and ref-counted
+- Time to get started: really fast
+
+#### [Zig](https://ziglang.org)
+- Manual memory management
+- Nice error handling (errors being part of the return _type_ of a function, not the function signature etc.)
+- Interesint type system
+- As close to metal as C; seems like a good alternative to it
+
+#### [Crystal](https://crystal-lang.org)
+- Syntax ruby-like
+
+### Somewhat strange language: [Haxe](https://haxe.org)
+I get that it is a cross-platform language. It seems that it hasn't learned from Java.
+Basic things are still missing like getting the size of a `HashMap<K, V>`.
