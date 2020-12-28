@@ -30,6 +30,7 @@ To see how to run the solutions of each individual day, look at its main source 
 | 23  | [Crab Cups](https://adventofcode.com/2020/day/23)               | [Link](23) | [Zig](https://en.wikipedia.org/wiki/Zig_(programming_language))         |                                                                                                                               |
 | 24  | [Lobby Layout](https://adventofcode.com/2020/day/24)            | [Link](24) | [Haxe](https://en.wikipedia.org/wiki/Haxe)                              |                                                                                                                               |
 | 25  | [Combo Breaker](https://adventofcode.com/2020/day/25)           | [Link](25) | [V](https://vlang.io)                                                   | Breaking [DH Key-Exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange)                                 |
+
 [Solutions and language ideas of 2019](https://github.com/nikeee/advent-of-code-2019)
 
 ## Conclusion
