@@ -33,6 +33,7 @@ fn main() {
 
 	encryption_key := transform_subject_number(pub_key1, loop_size_2, modulus)
 	println("Recovered encryption key; Part 1: $encryption_key")
+	// Part 2 didn't have any task
 }
 
 fn compute_loop_size(public_key u64, subject_number u64, modulus u64) u64 {
