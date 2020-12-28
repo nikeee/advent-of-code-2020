@@ -42,6 +42,8 @@ Also, it may indicate what each language lacks or performes well in.
 The older the language, the harder it seems to maintain good software engineering practices (for example: Perl, AWK).
 However, the older the language, the more unusual it is. It seems that newer languages converge to each other (for example: Go, V, Dart).
 
+All tested young languages don't have a log of boilerplate code for small programs (for example, like C# and Java have).
+
 ### JavaScript
 JavaScript could need some custom value types that can be used as keys in a `Map` or elements in a `Set`.
 Classes don't provide `equals`/`hashCode` that would make this scenario possible.
