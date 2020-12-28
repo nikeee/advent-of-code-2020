@@ -28,7 +28,7 @@ To see how to run the solutions of each individual day, look at its main source 
 | 21  | [Allergen Assessment](https://adventofcode.com/2020/day/21)     | [Link](21) | [Dart](https://en.wikipedia.org/wiki/Dart_(programming_language))       |
 | 22  | [Crab Combat](https://adventofcode.com/2020/day/22)             | [Link](22) | [Crystal](https://en.wikipedia.org/wiki/Crystal_(programming_language)) |
 | 23  | [Crab Cups](https://adventofcode.com/2020/day/23)               | [Link](23) | [Zig](https://en.wikipedia.org/wiki/Zig_(programming_language))         |
-| 24  | [](https://adventofcode.com/2020/day/24)                        | [](24)     |                                                                         |
+| 24  | [Lobby Layout](https://adventofcode.com/2020/day/24)            | [Link](24) | [Haxe](https://en.wikipedia.org/wiki/Haxe)                              |
 | 25  | [](https://adventofcode.com/2020/day/25)                        | [](25)     |                                                                         |
 
 [Solutions and language ideas of 2019](https://github.com/nikeee/advent-of-code-2019)
